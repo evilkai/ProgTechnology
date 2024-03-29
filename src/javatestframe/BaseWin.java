@@ -10,19 +10,20 @@ public abstract class BaseWin extends JFrame {
     protected String[] OPTION;
     protected JComboBox<String> checkBoxOption;
     
-    protected Map<String,BaseWin> map=new HashMap<>();
+    //protected Map<String,BaseWin> map=new HashMap<>();
     
     protected String nameWin;
 
     public BaseWin(String name){
         super(name);
+        
         nameWin=name;
-        map.put(name, this);
+        //map.put(name, this);
         OPTION=new String[3];
         
         OPTION[0]="Base";
         OPTION[1]="Binary";
-        OPTION[2]="Grapich";
+        OPTION[2]="Graphic";
         
         checkBoxOption= new JComboBox<String>(OPTION);
         checkBoxOption.setName("Oprions");
@@ -32,6 +33,7 @@ public abstract class BaseWin extends JFrame {
         
     }
     
+    // Иницилизация окна 
     public void init(){
         System.out.println("this");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -42,6 +44,7 @@ public abstract class BaseWin extends JFrame {
         setVisible(true);        
     }
     
+    // Открытие/смена окна 
     public void openWindow(String name){
         if(this.nameWin.equals(name)) return;
         switch (name) {
@@ -55,6 +58,11 @@ public abstract class BaseWin extends JFrame {
                 this.dispose();
                 System.out.println("It is Binary");
                 break;
+            case "Graphic":
+                new Graphic(name);
+                this.dispose();
+                System.out.println("It is Graphic");
+                break;
             default:
                 System.out.println("No Window");
         }
@@ -62,9 +70,9 @@ public abstract class BaseWin extends JFrame {
     
     
     
-    public abstract  void setButton();
-    public abstract  JPanel setTop(JPanel layout);
-    public abstract  JPanel setCenter(JPanel layout);
-    public abstract  JPanel setBottom(JPanel layout);
-    public abstract void onClose();
+    public abstract  void setButton();  // установить кнопки кнопок
+    public abstract  JPanel setTop(JPanel layout);  // верхняя часть
+    public abstract  JPanel setCenter(JPanel layout);   // цент часть
+    public abstract  JPanel setBottom(JPanel layout);   // внижняя часть
+    public abstract void onClose(); // Закритие окна ?*
 }

@@ -60,6 +60,8 @@ public class Binary extends BaseWin{
     
     public Binary(String name){
         super(name);
+        System.out.println("Wind Binary");
+        
         listener=new ButtonEvent(this);
         init();
         setButton();

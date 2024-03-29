@@ -43,7 +43,7 @@ public class Simple extends BaseWin{
     
     private JButton buttonPer=new JButton("%");
     
-    // Переменные
+    // Переменные - обработчик
     
     private ButtonEvent listener;
     
@@ -51,11 +51,9 @@ public class Simple extends BaseWin{
     
     public Simple(String name){
         super(name);
-        System.out.println("pot");
-        Object selected = checkBoxOption.getSelectedItem();
+        System.out.println("Wind Simple");
         
         listener=new ButtonEvent(this);
-        //listener._getName();
         
         init();
         setButton();
