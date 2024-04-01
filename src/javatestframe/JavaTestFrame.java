@@ -1,5 +1,8 @@
 package javatestframe;
 
+import javatestframe.windows.Simple;
+
+
 public class JavaTestFrame {
 
     public static void main(String[] args) {

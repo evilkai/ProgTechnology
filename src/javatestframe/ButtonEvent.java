@@ -1,7 +1,6 @@
 
 package javatestframe;
 
-import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
@@ -11,7 +10,7 @@ public class ButtonEvent implements ActionListener{
     public ButtonEvent(BaseWin get){
         
         wind=get;
-        System.out.println("HERE "+wind.nameWin);
+        //System.out.println("HERE "+wind.nameWin);
     }
 
     
@@ -21,24 +20,24 @@ public class ButtonEvent implements ActionListener{
             System.out.println("OVVERIDE");
             Object type=e.getSource();
             switch (type.getClass().getSimpleName()) {
-        case "JButton":
+        case "JButton": // TODO: cделать; обработка кнопок
             JButton clikedButton=(JButton) type;
             System.out.println("ButtonEvent actionPerformed");
             String text=clikedButton.getText();
             System.out.println(text);
             break;
-        case "JComboBox":
+        case "JComboBox":   // Обработка чекбоксов
+            System.out.println("ERROR HERE");
             JComboBox<String> cb=(JComboBox<String>)type;
             Object get=cb.getSelectedItem();
-            System.out.println(cb.getName());
-            System.out.println(wind.nameWin);
+            System.out.println("ITS IN CHECKBOX "+get.toString());
             wind.openWindow(get.toString());
             break;
         default:
             throw new AssertionError();
             }
         }
-    public void Button(){}
-    public void onNewWindow(){}
-    public void setBase(){}
+    public void Button(){}  // TODO: cделать;
+    public void onNewWindow(){} // TODO: cделать;
+    public void setBase(){} // TODO: cделать;
 }

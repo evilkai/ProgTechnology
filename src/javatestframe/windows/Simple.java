@@ -1,14 +1,15 @@
 
-package javatestframe;
+package javatestframe.windows;
 
 import java.awt.*;
-import java.util.HashSet;
-import java.util.Set;
+import javatestframe.BaseWin;
+import javatestframe.ButtonEvent;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 
 public class Simple extends BaseWin{
     
+    // Числовые кнопки
     private JButton button1=new JButton("1");
     private JButton button2=new JButton("2");
     private JButton button3=new JButton("3");
@@ -20,22 +21,21 @@ public class Simple extends BaseWin{
     private JButton button9=new JButton("9");
     private JButton button0=new JButton("0");
     
+    // TODO: Изменить кнопки
     private JButton buttonUnar=new JButton(new ImageIcon("D:\\Program\\Java\\JavaTestFrame\\src\\Icon\\clearAll.png"));
     private JButton buttonSplit=new JButton(".");
     
+    // TODO: изменить; Поля ввода/вывода
     private JTextField textField1=new JTextField();
     private JTextField textField2=new JTextField();
     private JTextField textFieldNameOption=new JTextField(10);
     
+    // Функциональные кнопки
     private JButton buttonDel=new JButton("/");
     private JButton buttonMul=new JButton("*");
     private JButton buttonSub=new JButton("-");
     private JButton buttonAdd=new JButton("+");
     private JButton buttonEqu=new JButton("=");
-    
-    private JButton buttonClearAll=new JButton("C");
-    private JButton buttonClearLine=new JButton("CL");
-    private JButton buttonClearChar=new JButton("CC");
     
     private JButton buttonPow=new JButton("pow(x,a)");
     private JButton buttonSqr=new JButton("sqr)");
@@ -43,8 +43,12 @@ public class Simple extends BaseWin{
     
     private JButton buttonPer=new JButton("%");
     
-    // Переменные - обработчик
+    // Кнопки очистки
+    private JButton buttonClearAll=new JButton("C");
+    private JButton buttonClearLine=new JButton("CL");
+    private JButton buttonClearChar=new JButton("CC");
     
+    // Переменные - обработчик
     private ButtonEvent listener;
     
     
@@ -89,7 +93,6 @@ public class Simple extends BaseWin{
         // Добавление кнопки в центр
         param.gridx = 0;
         param.gridy = 1;
-        //center.add(new JButton("CENTER"), param);
         param.fill = GridBagConstraints.BOTH;
         param.weighty = 1.0;
         center.setBorder(new LineBorder(Color.BLACK));
@@ -98,7 +101,6 @@ public class Simple extends BaseWin{
         // Добавление кнопки вниз
         param.gridx = 0;
         param.gridy = 2;
-        //bottom.add(new JButton("BOTTOM"), param);
         param.fill = GridBagConstraints.HORIZONTAL;
         param.weighty = 0.0;
         param.anchor = GridBagConstraints.SOUTH;
@@ -121,14 +123,12 @@ public class Simple extends BaseWin{
         // TextField
         param.gridx = 1;
         param.gridy = 0;
-        //param.weightx=0;
         textFieldNameOption.setBorder(null);
         layout.add(textFieldNameOption, param);
 
         // Пустая метка
         param.gridx = 2;
         param.gridy = 0;
-        //param.weightx=2;
         param.gridwidth = 2;
         layout.add(new JLabel(), param);
 
@@ -140,17 +140,20 @@ public class Simple extends BaseWin{
     public JPanel setCenter(JPanel layout) {
         GridBagConstraints param=new GridBagConstraints();
         
+        // История операций
         param.gridx=0;
         param.gridy=0;
         param.weightx=1;
-        param.weighty=0;
+        param.weighty=0.2;
         param.fill=GridBagConstraints.BOTH;
         textField2.setFont(new Font("Ariel",Font.PLAIN,20));
         textField2.setForeground(Color.GRAY);
+        textField2.setBackground(Color.red);
         textField2.setHorizontalAlignment(SwingConstants.RIGHT);
         textField2.setBorder(null);
         layout.add(textField2,param);
         
+        // Текущая операция 
         param.gridx=0;
         param.gridy=1;
         param.weightx=1;
@@ -169,6 +172,7 @@ public class Simple extends BaseWin{
     public JPanel setBottom(JPanel layout) {
         GridBagConstraints param=new GridBagConstraints();
         param.fill=GridBagConstraints.BOTH;
+        param.weightx=1.0;
         param.gridy=0;
         
         param.gridx=0;
@@ -254,5 +258,12 @@ public class Simple extends BaseWin{
     public void onClose() {
         System.out.println("OnClose Simple");
     }
+
+    @Override
+    public Simple getWindow() {
+        return this;
+    }
+
+
 
 }

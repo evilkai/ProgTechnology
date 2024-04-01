@@ -1,15 +1,17 @@
 
-package javatestframe;
-
+package javatestframe.windows;
 import java.awt.*;
+import javatestframe.BaseWin;
+import javatestframe.ButtonEvent;
 import javax.swing.*;
 import javax.swing.border.*;
 
 
 public class Binary extends BaseWin{
 
-    String[] BASE={"2","4","8","10","16"};
+    String[] BASE={"2","4","8","10","16"}; // Основания систем счисления
     
+    // Числовые кнопки
     private JButton button1=new JButton("1");
     private JButton button2=new JButton("2");
     private JButton button3=new JButton("3");
@@ -21,6 +23,7 @@ public class Binary extends BaseWin{
     private JButton button9=new JButton("9");
     private JButton button0=new JButton("0");
     
+    // Буквенные
     private JButton buttonA=new JButton("A");
     private JButton buttonB=new JButton("B");
     private JButton buttonC=new JButton("C");
@@ -28,9 +31,11 @@ public class Binary extends BaseWin{
     private JButton buttonE=new JButton("E");
     private JButton buttonF=new JButton("F");
     
+    // TODO: Изменить кнопки
     private JButton buttonUnar=new JButton("test");
     private JButton buttonSplit=new JButton(".");
     
+    // Функциональные кнопки
     private JButton buttonStepRight=new JButton(">>");
     private JButton buttonStepLeft=new JButton("<<");
     private JButton buttonMod=new JButton("%");
@@ -40,22 +45,28 @@ public class Binary extends BaseWin{
     private JButton buttonAdd=new JButton("+");
     private JButton buttonEqu=new JButton("=");
     
+    // Скобки
     private JButton buttonRight=new JButton("(");
     private JButton buttonLeft=new JButton(")");
     
+    // Поля ввода/вывода
     private JTextField textName=new JTextField("");
     private JTextField textFrom=new JTextField("");
     private JTextField textIn=new JTextField("");
     
+    // Отображение систем счисления
     private JLabel LableFrom=new JLabel("From");
     private JLabel LableIn=new JLabel("In");
     
+    // Кнопки очистки
     private JButton buttonClearAll=new JButton("CA");
     private JButton buttonClearChar=new JButton("CC");
     
+    // Чекбоксы для систем счисления
     private JComboBox<String> checkBoxFrom= new JComboBox<String>(BASE);
     private JComboBox<String> checkBoxIn= new JComboBox<String>(BASE);
     
+    // Обработчики
     private ButtonEvent listener;
     
     public Binary(String name){
@@ -65,11 +76,14 @@ public class Binary extends BaseWin{
         listener=new ButtonEvent(this);
         init();
         setButton();
+        
+        //checkBoxOption.setSelectedItem("Binary"); // TODO: как то исправить!!
     }
 
     @Override
     public void setButton() {
         System.out.println("TEST Binary");
+        
         Container frame=getContentPane();
         frame.setLayout(new GridBagLayout());
         GridBagConstraints param=new GridBagConstraints();
@@ -95,7 +109,6 @@ public class Binary extends BaseWin{
         // Добавление кнопки в центр
         param.gridx = 0;
         param.gridy = 1;
-        //center.add(new JButton("CENTER"), param);
         param.fill = GridBagConstraints.BOTH;
         param.weighty = 1.0;
         center.setBorder(new LineBorder(Color.BLACK));
@@ -104,7 +117,6 @@ public class Binary extends BaseWin{
         // Добавление кнопки вниз
         param.gridx = 0;
         param.gridy = 2;
-        //bottom.add(new JButton("BOTTOM"), param);
         param.fill = GridBagConstraints.HORIZONTAL;
         param.weighty = 0.0;
         param.anchor = GridBagConstraints.SOUTH;
@@ -127,14 +139,12 @@ public class Binary extends BaseWin{
         // TextField
         param.gridx = 1;
         param.gridy = 0;
-        //param.weightx=0;
         textName.setBorder(null);
         layout.add(textName, param);
 
         // Пустая метка
         param.gridx = 2;
         param.gridy = 0;
-        //param.weightx=2;
         param.gridwidth = 3;
         layout.add(new JLabel(), param);
 
@@ -146,6 +156,8 @@ public class Binary extends BaseWin{
     public JPanel setCenter(JPanel layout) {
         GridBagConstraints param=new GridBagConstraints();
         layout.setBackground(Color.WHITE);
+        
+        // Ввод
         param.gridwidth=5;
         param.gridx=0;
         param.gridy=0;
@@ -154,8 +166,6 @@ public class Binary extends BaseWin{
         param.fill=GridBagConstraints.BOTH;
         LableFrom.setBackground(Color.WHITE);
         LableFrom.setHorizontalAlignment(SwingConstants.CENTER);
-        //Border border = BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK);
-        //LableFrom.setBorder(border);
         layout.add(LableFrom,param);
         param.gridy=1;
         param.weighty=2;
@@ -165,6 +175,7 @@ public class Binary extends BaseWin{
         textFrom.setBorder(null);
         layout.add(textFrom,param);
         
+        // Вывод
         param.gridx=0;
         param.gridy=3;
         param.weightx=1;
@@ -180,8 +191,7 @@ public class Binary extends BaseWin{
         textIn.setHorizontalAlignment(SwingConstants.RIGHT);
         textIn.setBorder(null);
         layout.add(textIn,param);
-        
-        
+         
         return layout;
     }
 
@@ -277,5 +287,11 @@ public class Binary extends BaseWin{
     public void onClose() {
         System.out.println("OnClose Binary");
     }
+
+    @Override
+    public Binary getWindow() {
+        return this;
+    }
+
 
 }
