@@ -113,6 +113,10 @@ public class Graphic extends BaseWin{
         return (Graphic)this;
     }
 
+    @Override
+    public void onUpdate() {
+    }
+
     
     
 }

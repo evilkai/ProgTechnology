@@ -2,6 +2,9 @@
 package javatestframe;
 
 import java.awt.event.*;
+import javatestframe.SimpleImplement.Buttons;
+import javatestframe.SimpleImplement.SImpleMath;
+import javatestframe.windows.Simple;
 import javax.swing.*;
 
 
@@ -21,10 +24,11 @@ public class ButtonEvent implements ActionListener{
             Object type=e.getSource();
             switch (type.getClass().getSimpleName()) {
         case "JButton": // TODO: cделать; обработка кнопок
-            JButton clikedButton=(JButton) type;
-            System.out.println("ButtonEvent actionPerformed");
-            String text=clikedButton.getText();
-            System.out.println(text);
+            JButton clickedButton = (JButton) type;
+            int buttonId = Integer.parseInt(clickedButton.getActionCommand());
+            String out=SImpleMath.getMath(wind.outArea, buttonId,wind.inputArea);
+            System.out.println(out);
+            wind.inputArea.setText(wind.inputArea.getText()+out);
             break;
         case "JComboBox":   // Обработка чекбоксов
             System.out.println("ERROR HERE");

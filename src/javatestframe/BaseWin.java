@@ -9,6 +9,10 @@ public abstract class BaseWin extends JFrame {
     protected String[] OPTION;  // Список калькуляторо (типы)
     protected JComboBox<String> checkBoxOption;
     protected String nameWin;   // Название окна
+    private int rows=10, columns=1;
+    //protected JTextArea inputArea=new JTextArea(rows,columns);
+    protected JTextField inputArea;
+    protected JTextField outArea;
     
     protected Map<String,Integer> map=new HashMap<>(); 
     
@@ -16,13 +20,16 @@ public abstract class BaseWin extends JFrame {
     public BaseWin(String name){
         super(name);
         
-        nameWin=name;
-        OPTION=new String[4];
+        outArea=new JTextField();
+        inputArea=new JTextField();
         
-        OPTION[0]="Base";
-        OPTION[1]="Binary";
-        OPTION[2]="Graphic";
-        OPTION[3]="Engineering";
+        
+        nameWin=name;
+        OPTION=new String[3];
+        
+        OPTION[0]="Обычный";
+        OPTION[1]="Графический";
+        OPTION[2]="Инженерный";
         
         
         
@@ -54,22 +61,17 @@ public abstract class BaseWin extends JFrame {
         if(this.nameWin.equals(name)) return;
         System.out.println("CHECK "+name);
         switch (name) {
-            case "Base":
+            case "Обычный":
                 new Simple(name);
                 this.dispose();
                 System.out.println("It is Base");
                 break;
-            case "Binary":{
-                new Binary(name);
-                this.dispose();
-                System.out.println("It is Binary");
-                break;}
-            case "Graphic" :
+            case "Графический" :
                 new Graphic(name);
                 this.dispose();
                 System.out.println("It is Graphic");
                 break;
-            case "Engineering" :
+            case "Инженерный" :
                 new Engineering(name);
                 this.dispose();
                 System.out.println("It is Engineering");
@@ -81,12 +83,12 @@ public abstract class BaseWin extends JFrame {
     
     
     
-    public abstract  void setButton();  // установить кнопки кнопок
-    public abstract  JPanel setTop(JPanel layout);  // верхняя часть
-    public abstract  JPanel setCenter(JPanel layout);   // цент часть
-    public abstract  JPanel setBottom(JPanel layout);   // внижняя часть
+    protected abstract  void setButton();  // установить кнопки кнопок
+    protected abstract  JPanel setTop(JPanel layout);  // верхняя часть
+    protected abstract  JPanel setCenter(JPanel layout);   // цент часть
+    protected abstract  JPanel setBottom(JPanel layout);   // внижняя часть
     
     public abstract void onClose(); // Закритие окна ?*
-    //public abstract void onUpdate();
+    public abstract void onUpdate();
     public abstract BaseWin getWindow();
 }
