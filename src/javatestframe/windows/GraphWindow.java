@@ -35,6 +35,28 @@ public class GraphWindow extends BaseWin {
         graph = new HashMap<>();
         vertexCounter = 1;
     }
+    
+    private boolean isEdgeExists(String vertexA, String vertexB) {
+        // Проверяем ребро от вершины A к вершине B
+        List<GraphEdge> edgesFromA = graph.get(vertexA);
+        if (edgesFromA != null) {
+            for (GraphEdge edge : edgesFromA) {
+                if (edge.destinationVertex.equals(vertexB)) {
+                    return true;
+                }
+            }
+        }
+        // Проверяем ребро от вершины B к вершине A
+        List<GraphEdge> edgesFromB = graph.get(vertexB);
+        if (edgesFromB != null) {
+            for (GraphEdge edge : edgesFromB) {
+                if (edge.destinationVertex.equals(vertexA)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     @Override
     public void setButton() {
@@ -53,16 +75,27 @@ public class GraphWindow extends BaseWin {
 
         JButton addDependencyButton = new JButton("<html><div align=center>Добавить<br>зависимость</div></html>");
         addDependencyButton.addActionListener(e -> {
-            String selectedVertex = (String) vertexComboBox.getSelectedItem();
-            String dependency = (String) dependencyComboBox.getSelectedItem();
-            String weightText = weightField.getText();
-            if (selectedVertex != null && dependency != null && !weightText.isEmpty() && vertices.contains(dependency)) {
+        String selectedVertex = (String) vertexComboBox.getSelectedItem();
+        String dependency = (String) dependencyComboBox.getSelectedItem();
+        String weightText = weightField.getText();
+        // Проверяем, что выбранные вершины не равны друг другу
+        if (selectedVertex != null && dependency != null && !selectedVertex.equals(dependency) && !weightText.isEmpty() && vertices.contains(dependency)) {
+            // Проверяем, существует ли уже ребро между выбранными вершинами
+            if (!isEdgeExists(selectedVertex, dependency)) {
+                // Если ребра еще нет, добавляем его
                 int weight = Integer.parseInt(weightText);
                 graph.get(selectedVertex).add(new GraphEdge(dependency, weight));
                 weightField.setText("");
                 updateGraphOutput();
+            } else {
+                // Если ребро уже существует, выводим сообщение об ошибке
+                JOptionPane.showMessageDialog(null, "Ребро между выбранными вершинами уже существует!", "Ошибка", JOptionPane.ERROR_MESSAGE);
             }
-        });
+        } else {
+            // Если выбраны одинаковые вершины или какая-то из вершин не выбрана, выводим сообщение об ошибке
+            JOptionPane.showMessageDialog(null, "Выберите разные вершины и укажите вес!", "Ошибка", JOptionPane.ERROR_MESSAGE);
+        }
+    });
 
         JButton calculateShortestPathButton = new JButton("<html><div align=center>Найти кратчайший<br>путь</div></html>");
         calculateShortestPathButton.addActionListener(e -> {

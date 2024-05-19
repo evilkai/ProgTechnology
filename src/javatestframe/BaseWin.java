@@ -36,7 +36,7 @@ public abstract class BaseWin extends JFrame {
         
         OPTION[0]="Обычный";
         OPTION[1]="Инженерный";
-        OPTION[2]="Графический";
+        OPTION[2]="Графы";
         
         checkBoxOption = new JComboBox<>(OPTION);
         checkBoxOption.setName("Options");

@@ -1,2 +1,0 @@
-javatestframe.GraphWindow
-javatestframe.GraphEdge
