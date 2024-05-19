@@ -6,87 +6,77 @@ import javax.swing.*;
 
 public abstract class BaseWin extends JFrame {
     
-    protected String[] OPTION;  // Список калькуляторо (типы)
+    protected String[] OPTION;  // Список калькуляторов (типы)
     protected JComboBox<String> checkBoxOption;
     protected String nameWin;   // Название окна
     
-    protected Map<String,Integer> map=new HashMap<>(); 
-    
+    protected Map<String,Integer> map = new HashMap<>(); 
 
     public BaseWin(String name){
         super(name);
         
-        nameWin=name;
-        OPTION=new String[4];
+        nameWin = name;
+        OPTION = new String[5];
         
-        OPTION[0]="Base";
-        OPTION[1]="Binary";
-        OPTION[2]="Graphic";
-        OPTION[3]="Engineering";
+        OPTION[0] = "Base";
+        OPTION[1] = "Binary";
+        OPTION[2] = "Graphic";
+        OPTION[3] = "Engineering";
+        OPTION[4] = "GraphWindow";  // Новое окно
         
-        
-        
-        checkBoxOption= new JComboBox<>(OPTION);
+        checkBoxOption = new JComboBox<>(OPTION);
         checkBoxOption.setName("Options");
         checkBoxOption.addActionListener(new ButtonEvent(this));
-        
         checkBoxOption.setBackground(Color.WHITE);
         checkBoxOption.setBorder(null);
-        
         checkBoxOption.setSelectedItem(name);
-        
-        
     }
     
-    // Иницилизация окна 
+    // Инициализация окна 
     public void init(){
-        System.out.println("this");
+        System.out.println("Инициализация окна: " + nameWin);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null); // Положение null-центр
-        setSize(300,400);   // Размер ? 
+        setLocationRelativeTo(null); // Положение null - центр
+        setSize(300, 400);   // Размер
         getContentPane().setBackground(Color.WHITE);
-        //setResizable(false);
         setVisible(true);        
     }
     
     // Открытие/смена окна 
     public void openWindow(String name){
-        if(this.nameWin.equals(name)) return;
-        System.out.println("CHECK "+name);
+        if (this.nameWin.equals(name)) return;
+        System.out.println("Переключение на: " + name);
         switch (name) {
             case "Base":
-                new Simple(name);
+                new Simple(name).init();
                 this.dispose();
-                System.out.println("It is Base");
                 break;
-            case "Binary":{
-                new Binary(name);
+            case "Binary":
+                new Binary(name).init();
                 this.dispose();
-                System.out.println("It is Binary");
-                break;}
-            case "Graphic" :
-                new Graphic(name);
-                this.dispose();
-                System.out.println("It is Graphic");
                 break;
-            case "Engineering" :
-                new Engineering(name);
+            case "Graphic":
+                new Graphic(name).init();
                 this.dispose();
-                System.out.println("It is Engineering");
+                break;
+            case "Engineering":
+                new Engineering(name).init();
+                this.dispose();
+                break;
+            case "GraphWindow":
+                new GraphWindow(name).init();
+                this.dispose();
                 break;
             default:
-                System.out.println("ERROR: NO WINDOW");
+                System.out.println("ОШИБКА: НЕТ ТАКОГО ОКНА");
         }
     }
-    
-    
-    
-    public abstract  void setButton();  // установить кнопки кнопок
-    public abstract  JPanel setTop(JPanel layout);  // верхняя часть
-    public abstract  JPanel setCenter(JPanel layout);   // цент часть
-    public abstract  JPanel setBottom(JPanel layout);   // внижняя часть
-    
-    public abstract void onClose(); // Закритие окна ?*
-    //public abstract void onUpdate();
+
+    // Абстрактные методы для реализации в подклассах
+    public abstract void setButton();  // Установить кнопки
+    public abstract JPanel setTop(JPanel layout);  // Верхняя часть компоновки
+    public abstract JPanel setCenter(JPanel layout);   // Центральная часть компоновки
+    public abstract JPanel setBottom(JPanel layout);   // Нижняя часть компоновки
+    public abstract void onClose(); // Обработка закрытия окна
     public abstract BaseWin getWindow();
 }
