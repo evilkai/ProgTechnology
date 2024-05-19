@@ -230,4 +230,9 @@ public class GraphWindow extends BaseWin {
         System.out.println("Total Weight: " + totalWeight); // Выводим суммарный вес пути
         return shortestPath;
     }
+
+    @Override
+    public void onUpdate() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

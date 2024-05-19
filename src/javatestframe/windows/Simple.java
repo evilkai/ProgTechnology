@@ -112,7 +112,7 @@ public class Simple extends BaseWin{
     
 
     @Override
-    protected void setButton() {
+    public void setButton() {
         System.out.println("Обычный калькулятор");
         Container frame=getContentPane();
         frame.setLayout(new GridBagLayout());
@@ -155,7 +155,7 @@ public class Simple extends BaseWin{
     }
 
     @Override
-    protected JPanel setTop(JPanel layout) {
+    public JPanel setTop(JPanel layout) {
         GridBagConstraints param = new GridBagConstraints();
         param.gridx=0;
         param.gridy=0;
@@ -191,7 +191,7 @@ public class Simple extends BaseWin{
     }
 
     @Override
-    protected JPanel setCenter(JPanel layout) {
+    public JPanel setCenter(JPanel layout) {
         GridBagConstraints param=new GridBagConstraints();
         
         // История операций
@@ -226,7 +226,7 @@ public class Simple extends BaseWin{
     }
 
     @Override
-    protected JPanel setBottom(JPanel layout) {
+    public JPanel setBottom(JPanel layout) {
         GridBagConstraints param=new GridBagConstraints();
         param.fill=GridBagConstraints.BOTH;
         param.weightx=1.0;

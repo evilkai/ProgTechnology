@@ -421,7 +421,7 @@ public static double getFactorial(double f) {
 
 
     @Override
-    protected void setButton() {
+    public void setButton() {
        System.out.println("TEST Engin");
         Container frame=getContentPane();
         frame.setLayout(new GridBagLayout());
@@ -464,7 +464,7 @@ public static double getFactorial(double f) {
     }
 
     @Override
-    protected JPanel setTop(JPanel layout) {
+    public JPanel setTop(JPanel layout) {
  GridBagConstraints param = new GridBagConstraints();
         param.gridx=0;
         param.gridy=0;
@@ -502,7 +502,7 @@ public static double getFactorial(double f) {
     }
 
     @Override
-    protected JPanel setCenter(JPanel layout) {
+    public JPanel setCenter(JPanel layout) {
 GridBagConstraints param = new GridBagConstraints();
         param.gridx=0;
         param.gridy=0;
@@ -518,7 +518,7 @@ GridBagConstraints param = new GridBagConstraints();
     }
 
     @Override
-    protected JPanel setBottom(JPanel layout) {
+    public JPanel setBottom(JPanel layout) {
       GridBagConstraints param=new GridBagConstraints();
         param.fill=GridBagConstraints.BOTH;
         //param.insets=(new Insets(1, 1, 1, 1));
