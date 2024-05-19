@@ -77,7 +77,7 @@ public abstract class BaseWin extends JFrame {
                 new Engineering(name,position).init();
                 this.dispose();
                 break;
-            case "Графический":
+            case "Графы":
                 position=getLocation();
                 new GraphWindow(name,position).init();
                 this.dispose();
