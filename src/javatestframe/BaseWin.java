@@ -1,4 +1,5 @@
 package javatestframe;
+import javatestframe.windows.GraphWindow;
 import javatestframe.windows.*;
 import java.awt.*;
 import java.util.*;
@@ -15,6 +16,10 @@ public abstract class BaseWin extends JFrame {
     protected JTextField outArea;
     
     protected Map<String,Integer> map = new HashMap<>(); 
+    
+    private Point position;
+    private final int minX=600;
+    private final int minY=400;
 
     public BaseWin(String name){
         super(name);
@@ -39,16 +44,21 @@ public abstract class BaseWin extends JFrame {
         checkBoxOption.setBackground(Color.WHITE);
         checkBoxOption.setBorder(null);
         checkBoxOption.setSelectedItem(name);
+        
+        
+        
     }
     
     // Инициализация окна 
     public void init(){
         System.out.println("Инициализация окна: " + nameWin);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null); // Положение null - центр
-        setSize(300, 400);   // Размер
+        //setLocationRelativeTo(null); // Положение null - центр
+        setSize(400, 600);   // Размер
+        this.setMinimumSize(new Dimension(minY, minX));
         getContentPane().setBackground(Color.WHITE);
-        setVisible(true);        
+        setVisible(true);
+        
     }
     
     // Открытие/смена окна 
@@ -57,15 +67,19 @@ public abstract class BaseWin extends JFrame {
         System.out.println("Переключение на: " + name);
         switch (name) {
             case "Обычный":
-                new Simple(name);
+                position=getLocation();
+                System.out.println("GET LOCATION "+position);
+                new Simple(name,position);
                 this.dispose();
                 break;
             case "Инженерный":
-                new Engineering(name).init();
+                position=getLocation();
+                new Engineering(name,position).init();
                 this.dispose();
                 break;
             case "Графический":
-                new GraphWindow(name).init();
+                position=getLocation();
+                new GraphWindow(name,position).init();
                 this.dispose();
                 break;
             default:
@@ -80,6 +94,16 @@ public abstract class BaseWin extends JFrame {
     public abstract JPanel setBottom(JPanel layout);   // Нижняя часть компоновки
     public abstract void onClose(); // Обработка закрытия окна
     
+    public abstract Point getLocationWindow();
+    
     public abstract void onUpdate();
     public abstract BaseWin getWindow();
+    
+    protected void centerWindow(JFrame window) {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        
+        int x = (screenSize.width-minX)/2;
+        int y = (screenSize.height-minY)/2;
+        window.setLocation(x, y);
+    }
 }

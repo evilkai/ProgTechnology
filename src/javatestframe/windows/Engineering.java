@@ -88,8 +88,10 @@ public class Engineering extends BaseWin{
     // Флаги
     boolean isCreated=false;
     
-    public Engineering(String name) {
+    public Engineering(String name, Point location) {
         super(name);
+        
+        this.setLocation(location);
         
         this.addComponentListener(new FrameListener(this));
         
@@ -730,5 +732,10 @@ GridBagConstraints param = new GridBagConstraints();
             System.out.println("UPDATE IS SIMPLE");
             inputArea.setFont(new Font("Ariel",Font.BOLD,(int)((double)(center.getHeight()/100.*35))));
         }
+    }
+
+    @Override
+    public Point getLocationWindow() {
+        return this.getLocation();
     }
 } 

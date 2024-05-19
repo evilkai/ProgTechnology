@@ -1,9 +1,10 @@
-package javatestframe;
+package javatestframe.windows;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
+import javatestframe.BaseWin;
 
 // Класс для представления ребра графа
 class GraphEdge {
@@ -26,8 +27,11 @@ public class GraphWindow extends BaseWin {
     private Map<String, List<GraphEdge>> graph;
     private int vertexCounter;
 
-    public GraphWindow(String name) {
+    public GraphWindow(String name, Point location) {
         super(name);
+        
+        this.setLocation(location);
+        
         vertices = new ArrayList<>();
         graph = new HashMap<>();
         vertexCounter = 1; // Начинаем счетчик с 1
@@ -37,7 +41,7 @@ public class GraphWindow extends BaseWin {
     public void setButton() {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(1, 2));
-
+        
         JButton addVertexButton = new JButton("Add Vertex");
         addVertexButton.addActionListener(e -> {
             String vertex = String.valueOf(vertexCounter++); // Преобразуем счетчик в строку и увеличиваем его
@@ -49,7 +53,7 @@ public class GraphWindow extends BaseWin {
             updateGraphOutput(); // Обновляем вывод графа
         });
 
-        JButton addDependencyButton = new JButton("Add Dependency");
+        JButton addDependencyButton = new JButton("<html><div align=center>Add<br>Dependency</div></html>");
         addDependencyButton.addActionListener(e -> {
             String selectedVertex = (String) vertexComboBox.getSelectedItem();
             String dependency = (String) dependencyComboBox.getSelectedItem();
@@ -63,16 +67,18 @@ public class GraphWindow extends BaseWin {
             }
         });
 
-        JButton calculateShortestPathButton = new JButton("Calculate Shortest Path");
+        JButton calculateShortestPathButton = new JButton("<html><div align=center>Calculate Shortest<br>Path</div></html>");
         calculateShortestPathButton.addActionListener(e -> {
             String sourceVertex = (String) vertexComboBox.getItemAt(0); // Предполагаем, что первая вершина - исходная
             String destinationVertex = (String) vertexComboBox.getItemAt(vertexComboBox.getItemCount() - 1); // Предполагаем, что последняя вершина - конечная
             List<String> shortestPath = calculateShortestPath(sourceVertex, destinationVertex);
             System.out.println("Shortest Path: " + shortestPath);
         });
-
+        addVertexButton.setFont(new Font("Arial", Font.PLAIN, 15));
         buttonPanel.add(addVertexButton);
+        addDependencyButton.setFont(new Font("Arial", Font.PLAIN, 15));
         buttonPanel.add(addDependencyButton);
+        calculateShortestPathButton.setFont(new Font("Arial", Font.PLAIN,15));
         buttonPanel.add(calculateShortestPathButton);
         add(buttonPanel, BorderLayout.SOUTH);
     }
@@ -81,6 +87,7 @@ public class GraphWindow extends BaseWin {
     public JPanel setTop(JPanel layout) {
         JLabel titleLabel = new JLabel("Graph Input");
         titleLabel.setHorizontalAlignment(JLabel.CENTER);
+        layout.add(checkBoxOption);
         layout.add(titleLabel, BorderLayout.NORTH);
         return layout;
     }
@@ -234,5 +241,10 @@ public class GraphWindow extends BaseWin {
     @Override
     public void onUpdate() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public Point getLocationWindow() {
+        return this.getLocation();
     }
 }

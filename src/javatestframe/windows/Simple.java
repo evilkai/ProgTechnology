@@ -63,8 +63,10 @@ public class Simple extends BaseWin{
     
     
     
-    public Simple(String name){
+    public Simple(String name, Point location){
         super(name);
+        if(location==null){centerWindow(this);}
+        else {setLocation(location);}
         
         button1=new JButton("1");
         button2=new JButton("2");
@@ -434,6 +436,11 @@ public class Simple extends BaseWin{
             inputArea.setFont(new Font("Ariel",Font.BOLD,(int)((double)(center.getHeight()/100.*25))));
             outArea.setFont(new Font("Ariel",Font.PLAIN,(int)((double)(center.getHeight()/100.*15))));
         }
+    }
+
+    @Override
+    public Point getLocationWindow() {
+        return this.getLocation();
     }
 
 
