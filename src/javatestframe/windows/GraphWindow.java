@@ -1,15 +1,16 @@
 package javatestframe.windows;
 
 import javax.swing.*;
+import javax.swing.text.NumberFormatter;
 import java.awt.*;
+import java.text.NumberFormat;
 import java.util.*;
 import java.util.List;
 import javatestframe.BaseWin;
 
-// Класс для представления ребра графа
 class GraphEdge {
-    String destinationVertex; // Вершина назначения
-    int weight; // Вес ребра
+    String destinationVertex;
+    int weight;
 
     public GraphEdge(String destinationVertex, int weight) {
         this.destinationVertex = destinationVertex;
@@ -21,7 +22,7 @@ public class GraphWindow extends BaseWin {
 
     private JComboBox<String> vertexComboBox;
     private JComboBox<String> dependencyComboBox;
-    private JTextField weightField;
+    private JFormattedTextField weightField;
     private JTextArea outputArea;
     private List<String> vertices;
     private Map<String, List<GraphEdge>> graph;
@@ -29,65 +30,112 @@ public class GraphWindow extends BaseWin {
 
     public GraphWindow(String name, Point location) {
         super(name);
-        
         this.setLocation(location);
-        
         vertices = new ArrayList<>();
         graph = new HashMap<>();
-        vertexCounter = 1; // Начинаем счетчик с 1
+        vertexCounter = 1;
+    }
+    
+    private boolean isEdgeExists(String vertexA, String vertexB) {
+        // Проверяем ребро от вершины A к вершине B
+        List<GraphEdge> edgesFromA = graph.get(vertexA);
+        if (edgesFromA != null) {
+            for (GraphEdge edge : edgesFromA) {
+                if (edge.destinationVertex.equals(vertexB)) {
+                    return true;
+                }
+            }
+        }
+        // Проверяем ребро от вершины B к вершине A
+        List<GraphEdge> edgesFromB = graph.get(vertexB);
+        if (edgesFromB != null) {
+            for (GraphEdge edge : edgesFromB) {
+                if (edge.destinationVertex.equals(vertexA)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override
     public void setButton() {
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayout(1, 2));
-        
-        JButton addVertexButton = new JButton("Add Vertex");
+        buttonPanel.setLayout(new GridLayout(2, 2));
+
+        JButton addVertexButton = new JButton("Добавить вершину");
         addVertexButton.addActionListener(e -> {
-            String vertex = String.valueOf(vertexCounter++); // Преобразуем счетчик в строку и увеличиваем его
+            String vertex = String.valueOf(vertexCounter++);
             vertices.add(vertex);
             graph.put(vertex, new ArrayList<>());
             vertexComboBox.addItem(vertex);
-            dependencyComboBox.addItem(vertex); // Добавляем вершину в комбо-бокс зависимостей
-            System.out.println("Added Vertex: " + vertex);
-            updateGraphOutput(); // Обновляем вывод графа
+            dependencyComboBox.addItem(vertex);
+            updateGraphOutput();
         });
 
-        JButton addDependencyButton = new JButton("<html><div align=center>Add<br>Dependency</div></html>");
+        JButton addDependencyButton = new JButton("<html><div align=center>Добавить<br>зависимость</div></html>");
         addDependencyButton.addActionListener(e -> {
-            String selectedVertex = (String) vertexComboBox.getSelectedItem();
-            String dependency = (String) dependencyComboBox.getSelectedItem();
-            String weight = weightField.getText();
-            if (selectedVertex != null && dependency != null && !weight.isEmpty() && vertices.contains(dependency)) {
-                // Добавляем зависимость и вес
-                graph.get(selectedVertex).add(new GraphEdge(dependency, Integer.parseInt(weight)));
-                System.out.println("Added Dependency from " + selectedVertex + " to " + dependency + " (Weight: " + weight + ")");
+        String selectedVertex = (String) vertexComboBox.getSelectedItem();
+        String dependency = (String) dependencyComboBox.getSelectedItem();
+        String weightText = weightField.getText();
+        // Проверяем, что выбранные вершины не равны друг другу
+        if (selectedVertex != null && dependency != null && !selectedVertex.equals(dependency) && !weightText.isEmpty() && vertices.contains(dependency)) {
+            // Проверяем, существует ли уже ребро между выбранными вершинами
+            if (!isEdgeExists(selectedVertex, dependency)) {
+                // Если ребра еще нет, добавляем его
+                int weight = Integer.parseInt(weightText);
+                graph.get(selectedVertex).add(new GraphEdge(dependency, weight));
                 weightField.setText("");
-                updateGraphOutput(); // Обновляем вывод графа
+                updateGraphOutput();
+            } else {
+                // Если ребро уже существует, выводим сообщение об ошибке
+                JOptionPane.showMessageDialog(null, "Ребро между выбранными вершинами уже существует!", "Ошибка", JOptionPane.ERROR_MESSAGE);
             }
+        } else {
+            // Если выбраны одинаковые вершины или какая-то из вершин не выбрана, выводим сообщение об ошибке
+            JOptionPane.showMessageDialog(null, "Выберите разные вершины и укажите вес!", "Ошибка", JOptionPane.ERROR_MESSAGE);
+        }
+    });
+
+        JButton calculateShortestPathButton = new JButton("<html><div align=center>Найти кратчайший<br>путь</div></html>");
+        calculateShortestPathButton.addActionListener(e -> {
+            String sourceVertex = (String) vertexComboBox.getItemAt(0);
+            String destinationVertex = (String) vertexComboBox.getItemAt(vertexComboBox.getItemCount() - 1);
+            List<String> shortestPath = calculateShortestPath(sourceVertex, destinationVertex);
+            int totalWeight = calculateTotalWeight(shortestPath);
+            String result = "Кратчайший путь: " + shortestPath + "\nСуммарный вес: " + totalWeight;
+            showResultWindow("Кратчайший путь", result);
         });
 
-        JButton calculateShortestPathButton = new JButton("<html><div align=center>Calculate Shortest<br>Path</div></html>");
-        calculateShortestPathButton.addActionListener(e -> {
-            String sourceVertex = (String) vertexComboBox.getItemAt(0); // Предполагаем, что первая вершина - исходная
-            String destinationVertex = (String) vertexComboBox.getItemAt(vertexComboBox.getItemCount() - 1); // Предполагаем, что последняя вершина - конечная
-            List<String> shortestPath = calculateShortestPath(sourceVertex, destinationVertex);
-            System.out.println("Shortest Path: " + shortestPath);
+        JButton calculateLongestPathButton = new JButton("<html><div align=center>Найти самый<br>длинный путь</div></html>");
+        calculateLongestPathButton.addActionListener(e -> {
+            String sourceVertex = (String) vertexComboBox.getItemAt(0);
+            String destinationVertex = (String) vertexComboBox.getItemAt(vertexComboBox.getItemCount() - 1);
+            List<String> longestPath = calculateLongestPath(sourceVertex, destinationVertex);
+            int totalWeight = calculateTotalWeight(longestPath);
+            String result = "Самый длинный путь: " + longestPath + "\nСуммарный вес: " + totalWeight;
+            showResultWindow("Самый длинный путь", result);
         });
+
         addVertexButton.setFont(new Font("Arial", Font.PLAIN, 15));
         buttonPanel.add(addVertexButton);
         addDependencyButton.setFont(new Font("Arial", Font.PLAIN, 15));
         buttonPanel.add(addDependencyButton);
-        calculateShortestPathButton.setFont(new Font("Arial", Font.PLAIN,15));
+        calculateShortestPathButton.setFont(new Font("Arial", Font.PLAIN, 15));
         buttonPanel.add(calculateShortestPathButton);
+        calculateLongestPathButton.setFont(new Font("Arial", Font.PLAIN, 15));
+        buttonPanel.add(calculateLongestPathButton);
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
     @Override
     public JPanel setTop(JPanel layout) {
-        JLabel titleLabel = new JLabel("Graph Input");
-        titleLabel.setHorizontalAlignment(JLabel.CENTER);
+        
+        // CheckBox
+        checkBoxOption.setBorder(null);
         layout.add(checkBoxOption);
+        JLabel titleLabel = new JLabel("Добавьте данные о графе");
+        titleLabel.setHorizontalAlignment(JLabel.CENTER);
         layout.add(titleLabel, BorderLayout.NORTH);
         return layout;
     }
@@ -97,14 +145,22 @@ public class GraphWindow extends BaseWin {
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new GridLayout(7, 1));
 
-        JLabel selectVertexLabel = new JLabel("Select Vertex:");
+        JLabel selectVertexLabel = new JLabel("Вершина А:");
         vertexComboBox = new JComboBox<>();
 
-        JLabel dependencyLabel = new JLabel("Select Dependency:");
+        JLabel dependencyLabel = new JLabel("Вершина Б:");
         dependencyComboBox = new JComboBox<>();
 
-        JLabel weightLabel = new JLabel("Weight:");
-        weightField = new JTextField();
+        JLabel weightLabel = new JLabel("Укажите вес пути A -> Б:");
+
+        NumberFormat format = NumberFormat.getInstance();
+        NumberFormatter formatter = new NumberFormatter(format);
+        formatter.setValueClass(Integer.class);
+        formatter.setMinimum(0);
+        formatter.setAllowsInvalid(false);
+        formatter.setCommitsOnValidEdit(true);
+
+        weightField = new JFormattedTextField(formatter);
 
         centerPanel.add(selectVertexLabel);
         centerPanel.add(vertexComboBox);
@@ -119,10 +175,15 @@ public class GraphWindow extends BaseWin {
 
     @Override
     public JPanel setBottom(JPanel layout) {
-        outputArea = new JTextArea(5, 20);
+        JPanel bottomPanel = new JPanel(new BorderLayout());
+
+        outputArea = new JTextArea(10, 20);
         outputArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(outputArea);
-        layout.add(scrollPane, BorderLayout.CENTER);
+
+        bottomPanel.add(scrollPane, BorderLayout.CENTER);
+
+        layout.add(bottomPanel, BorderLayout.CENTER);
         add(layout, BorderLayout.SOUTH);
         return layout;
     }
@@ -157,7 +218,6 @@ public class GraphWindow extends BaseWin {
         setButton();
     }
 
-    // Метод для обновления вывода графа
     private void updateGraphOutput() {
         StringBuilder output = new StringBuilder();
         for (String vertex : vertices) {
@@ -167,80 +227,128 @@ public class GraphWindow extends BaseWin {
                 for (GraphEdge edge : edges) {
                     output.append(edge.destinationVertex).append(" (Weight: ").append(edge.weight).append("), ");
                 }
-                output.setLength(output.length() - 2); // Удаляем лишнюю запятую и пробел в конце строки
+                output.setLength(output.length() - 2);
             }
             output.append("\n");
         }
         String outputString = output.toString();
-        outputArea.setText(outputString); // Устанавливаем текстовое содержимое
-        System.out.println(outputString); // Выводим в консоль
+        outputArea.setText(outputString);
+        System.out.println(outputString);
     }
 
-    // Метод для расчета кратчайшего пути с помощью алгоритма Дейкстры
-    private List<String> calculateShortestPath(String sourceVertex, String destinationVertex) {
-        Map<String, Integer> distances = new HashMap<>(); // Хранит расстояния от исходной вершины до всех остальных
-        Map<String, String> previousVertices = new HashMap<>(); // Хранит предыдущие вершины на кратчайшем пути
-        PriorityQueue<String> queue = new PriorityQueue<>(Comparator.comparingInt(distances::get)); // Очередь с приоритетами для выбора следующей вершины для рассмотрения
+        private List<String> calculateShortestPath(String sourceVertex, String destinationVertex) {
+        Map<String, Integer> distances = new HashMap<>();
+        Map<String, String> previousVertices = new HashMap<>();
+        PriorityQueue<String> queue = new PriorityQueue<>(Comparator.comparingInt(distances::get));
 
-        // Инициализация расстояний и предыдущих вершин
-                // Инициализация расстояний и предыдущих вершин
         for (String vertex : vertices) {
-            distances.put(vertex, Integer.MAX_VALUE); // Изначально все расстояния до вершин бесконечны
-            previousVertices.put(vertex, null); // Изначально нет предыдущих вершин
-            queue.add(vertex); // Добавляем все вершины в очередь
+            distances.put(vertex, Integer.MAX_VALUE);
+            previousVertices.put(vertex, null);
+            queue.add(vertex);
         }
-        distances.put(sourceVertex, 0); // Расстояние от начальной вершины до неё самой равно 0
+        distances.put(sourceVertex, 0);
 
-        // Пока очередь не пуста
         while (!queue.isEmpty()) {
-            String currentVertex = queue.poll(); // Извлекаем вершину с наименьшим расстоянием
+            String currentVertex = queue.poll();
             if (currentVertex.equals(destinationVertex)) {
-                break; // Если достигли конечной вершины, прекращаем процесс
+                break;
             }
-            List<GraphEdge> edges = graph.get(currentVertex); // Получаем все рёбра для текущей вершины
+            List<GraphEdge> edges = graph.get(currentVertex);
             if (edges != null) {
                 for (GraphEdge edge : edges) {
-                    int alternativeDistance = distances.get(currentVertex) + edge.weight; // Рассчитываем альтернативное расстояние
+                    int alternativeDistance = distances.get(currentVertex) + edge.weight;
                     if (alternativeDistance < distances.get(edge.destinationVertex)) {
-                        distances.put(edge.destinationVertex, alternativeDistance); // Обновляем расстояние
-                        previousVertices.put(edge.destinationVertex, currentVertex); // Устанавливаем текущую вершину как предыдущую на кратчайшем пути
-                        queue.remove(edge.destinationVertex); // Удаляем и добавляем обратно вершину для обновления её приоритета в очереди
+                        distances.put(edge.destinationVertex, alternativeDistance);
+                        previousVertices.put(edge.destinationVertex, currentVertex);
+                        queue.remove(edge.destinationVertex);
                         queue.add(edge.destinationVertex);
                     }
                 }
             }
         }
 
-        // Восстанавливаем кратчайший путь
         List<String> shortestPath = new ArrayList<>();
         String currentVertex = destinationVertex;
-        int totalWeight = 0; // Добавляем переменную для суммарного веса пути
         while (currentVertex != null) {
-            shortestPath.add(0, currentVertex); // Вставляем вершину в начало списка
-            String previousVertex = previousVertices.get(currentVertex); // Получаем предыдущую вершину
-            if (previousVertex != null) {
-                // Находим ребро между текущей и предыдущей вершиной
-                List<GraphEdge> edges = graph.get(previousVertex);
-                if (edges != null) {
-                    for (GraphEdge edge : edges) {
-                        if (edge.destinationVertex.equals(currentVertex)) {
-                            // Увеличиваем суммарный вес на вес текущего ребра
-                            totalWeight += edge.weight;
-                            break;
-                        }
+            shortestPath.add(0, currentVertex);
+            currentVertex = previousVertices.get(currentVertex);
+        }
+
+        return shortestPath;
+    }
+
+    private List<String> calculateLongestPath(String sourceVertex, String destinationVertex) {
+        Map<String, Integer> distances = new HashMap<>();
+        Map<String, String> previousVertices = new HashMap<>();
+        PriorityQueue<String> queue = new PriorityQueue<>(Comparator.comparingInt(distances::get).reversed());
+
+        for (String vertex : vertices) {
+            distances.put(vertex, Integer.MIN_VALUE);
+            previousVertices.put(vertex, null);
+            queue.add(vertex);
+        }
+        distances.put(sourceVertex, 0);
+
+        while (!queue.isEmpty()) {
+            String currentVertex = queue.poll();
+            if (currentVertex.equals(destinationVertex)) {
+                break;
+            }
+            List<GraphEdge> edges = graph.get(currentVertex);
+            if (edges != null) {
+                for (GraphEdge edge : edges) {
+                    int alternativeDistance = distances.get(currentVertex) + edge.weight;
+                    if (alternativeDistance > distances.get(edge.destinationVertex)) {
+                        distances.put(edge.destinationVertex, alternativeDistance);
+                        previousVertices.put(edge.destinationVertex, currentVertex);
+                        queue.remove(edge.destinationVertex);
+                        queue.add(edge.destinationVertex);
                     }
                 }
             }
-            currentVertex = previousVertex; // Переходим к предыдущей вершине
         }
 
-        System.out.println("Total Weight: " + totalWeight); // Выводим суммарный вес пути
-        return shortestPath;
+        List<String> longestPath = new ArrayList<>();
+        String currentVertex = destinationVertex;
+        while (currentVertex != null) {
+            longestPath.add(0, currentVertex);
+            currentVertex = previousVertices.get(currentVertex);
+        }
+
+        return longestPath;
+    }
+
+    private int calculateTotalWeight(List<String> path) {
+        int totalWeight = 0;
+        for (int i = 0; i < path.size() - 1; i++) {
+            String currentVertex = path.get(i);
+            String nextVertex = path.get(i + 1);
+            List<GraphEdge> edges = graph.get(currentVertex);
+            if (edges != null) {
+                for (GraphEdge edge : edges) {
+                    if (edge.destinationVertex.equals(nextVertex)) {
+                        totalWeight += edge.weight;
+                        break;
+                    }
+                }
+            }
+        }
+        return totalWeight;
+    }
+
+    private void showResultWindow(String title, String result) {
+        JFrame resultFrame = new JFrame(title);
+        resultFrame.setSize(400, 200);
+        resultFrame.setLocationRelativeTo(null);
+        JTextArea resultArea = new JTextArea(result);
+        resultArea.setEditable(false);
+        resultFrame.add(new JScrollPane(resultArea));
+        resultFrame.setVisible(true);
     }
 
     @Override
     public void onUpdate() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
