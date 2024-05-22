@@ -730,7 +730,7 @@ GridBagConstraints param = new GridBagConstraints();
     public void onUpdate() {
         if(isCreated){
             System.out.println("UPDATE IS SIMPLE");
-            inputArea.setFont(new Font("Ariel",Font.BOLD,(int)((double)(center.getHeight()/100.*35))));
+            inputArea.setFont(new Font("Ariel",Font.BOLD,(int)((double)(center.getHeight()/100.*20))));
         }
     }
 
