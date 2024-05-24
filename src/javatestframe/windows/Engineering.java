@@ -91,7 +91,8 @@ public class Engineering extends BaseWin{
     public Engineering(String name, Point location) {
         super(name);
         
-        this.setLocation(location);
+        setLocation(location);
+        
         
         this.addComponentListener(new FrameListener(this));
         
@@ -730,12 +731,16 @@ GridBagConstraints param = new GridBagConstraints();
     public void onUpdate() {
         if(isCreated){
             System.out.println("UPDATE IS SIMPLE");
-            inputArea.setFont(new Font("Ariel",Font.BOLD,(int)((double)(center.getHeight()/100.*20))));
+            inputArea.setFont(new Font("Ariel",Font.BOLD,(int)((double)(center.getHeight()/100.*35))));
         }
     }
 
     @Override
     public Point getLocationWindow() {
-        return this.getLocation();
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
+   
+    
+    
+    
 } 
